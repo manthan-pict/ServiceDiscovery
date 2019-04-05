@@ -7,7 +7,7 @@ package com.tdcr.consul.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "config")
 public class AppPropsConfig {
 
     private String toggle;

@@ -6,8 +6,11 @@ import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
@@ -20,10 +23,13 @@ public class HttpsRedirectConfig {
     @Value("${server.port:8443}")
     private int httpsPort;
 
+    @Autowired
+    ServerProperties serverConfig;
+
 
     private static Logger LOG = LoggerFactory.getLogger(HttpsRedirectConfig.class);
 
-//    @Bean
+    @Bean
     public TomcatServletWebServerFactory servletContainer() throws Exception {
 
         TomcatServletWebServerFactory  tomcat = new TomcatServletWebServerFactory(){
@@ -33,6 +39,7 @@ public class HttpsRedirectConfig {
             }
         };
         tomcat.addAdditionalTomcatConnectors(createConnection());
+        tomcat.setSsl(serverConfig.getSsl());
         return tomcat;
     }
 

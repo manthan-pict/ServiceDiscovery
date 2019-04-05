@@ -10,7 +10,7 @@ spring:
       discovery:
         tags: foo=bar
         #For TLS update http to https in scheme
-        scheme: http
+        scheme: https
         healthCheckPath: /status
 #        healthCheckUrl: ${req.protocol}://localhost:${server.port}${spring.cloud.consul.discovery.healthCheckPath}
         healthCheckInterval: 10s
@@ -22,8 +22,8 @@ management:
   health:
     consul.enabled: true
 
-server.port: 8443
-#http.port: 8080
+#server.port: 8443
+#http.port: 8081
 #req.protocol: http
 
 #server.ssl:
