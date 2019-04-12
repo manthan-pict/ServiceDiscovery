@@ -19,4 +19,5 @@ public class AppPropsConfig {
     public void setToggle(String toggle) {
         this.toggle = toggle;
     }
+
 }

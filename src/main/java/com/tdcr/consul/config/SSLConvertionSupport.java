@@ -43,17 +43,17 @@ public class SSLConvertionSupport {
                 ObjectMapper mapper = new ObjectMapper();
                 // convert JSON string to Map
                     map = mapper.readValue(jsonString, new TypeReference<Map<String, String>>(){});
-                    sslConfig.setKeyStoreType(map.get("key-store-type"));
-                    sslConfig.setKeyStore(map.get("key-store"));
-                    sslConfig.setKeyStorePassword(map.get("key-store-password"));
-                    sslConfig.setKeyPassword(map.get("key-password"));
-                    sslConfig.setEnabled("true".equalsIgnoreCase(map.get("enabled"))?true:false);
+//                    sslConfig.setKeyStoreType(map.get("key-store-type"));
+//                    sslConfig.setKeyStore(map.get("key-store"));
+//                    sslConfig.setKeyStorePassword(map.get("key-store-password"));
+//                    sslConfig.setKeyPassword(map.get("key-password"));
+//                    sslConfig.setEnabled("true".equalsIgnoreCase(map.get("enabled"))?true:false);
                     LOG.info("SSLConfig:{}",map.toString());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.error(e.getMessage());
                 }
-                serverProperties.setSsl(sslConfig);
-                serverProperties.setPort(Integer.valueOf(map.get("port")));
+//                serverProperties.setSsl(sslConfig);
+                serverProperties.setPort(Integer.valueOf(map.get("port")));//server.port
                 return serverProperties;
             }
 

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+exec consul-template \
+    -consul-addr consul:8500 \
+    -log-level DEBUG \
+    -template "/etc/consul-templates/index.html:/usr/share/nginx/html/index.html" \
+    -template "/etc/consul-templates/nginx.conf:/etc/nginx/conf.d/app.conf:service nginx reload"

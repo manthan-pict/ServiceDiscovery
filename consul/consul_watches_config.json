@@ -1,0 +1,12 @@
+{
+  "node_name": "consul",
+  "server": true,
+  "log_level": "DEBUG",
+  "watches": [
+    {
+      "type": "service",
+      "service": "myMicroSvc",
+      "handler": "/tmp/script.sh >> /tmp/script.log"
+    }
+  ]
+}

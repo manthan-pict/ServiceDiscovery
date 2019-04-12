@@ -10,14 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 @Configuration
 public class HttpsRedirectConfig {
 
-    @Value("${http.port:8080}")
+    @Value("${http.port:9090}")
     private int httpPort;
 
     @Value("${server.port:8443}")
@@ -29,7 +28,7 @@ public class HttpsRedirectConfig {
 
     private static Logger LOG = LoggerFactory.getLogger(HttpsRedirectConfig.class);
 
-    @Bean
+//    @Bean
     public TomcatServletWebServerFactory servletContainer() throws Exception {
 
         TomcatServletWebServerFactory  tomcat = new TomcatServletWebServerFactory(){
@@ -68,5 +67,4 @@ public class HttpsRedirectConfig {
         else
             LOG.info("http.port: {}, https.port: {}",httpPort,httpsPort);
     }
-
 }
