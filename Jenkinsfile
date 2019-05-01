@@ -42,7 +42,7 @@ pipeline {
                            sh 'docker rmi -f $(docker images --filter=reference=consulsd --format "{{.ID}}")'
                          }
                      }
-                     sh 'docker build -t consulsd:1 ./consul/Dockerfile'
+                     sh 'docker build -t consulsd:1 ./consul'
                  }
         }
         stage('Staging Nginx-DockerImage') {
@@ -58,7 +58,7 @@ pipeline {
                            sh 'docker rmi -f $(docker images --filter=reference=ngx-consulsd --format "{{.ID}}")'
                          }
                      }
-                     sh 'docker build -t ngx-consulsd:1 ./nginx_setup/Dockerfile'
+                     sh 'docker build -t ngx-consulsd:1 ./nginx_setup'
                  }
         }
          stage('Containerising Consul-Nginx') {
