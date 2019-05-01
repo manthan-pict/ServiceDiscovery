@@ -2,7 +2,7 @@ def containerId=""
 pipeline {
     agent none
     stages {
-        stage('Build HystrixApp') {
+        stage('Build SvcDiscoveryApp') {
             agent {
                     docker {
                         image 'maven:3-alpine'
@@ -13,50 +13,65 @@ pipeline {
                     sh 'mvn -X clean install -DskipTests'
                   }
             }
-
-        stage('Staging Hystrix-DockerImage') {
+        stage('Staging SvcDiscovery-DockerImage') {
             agent any
             steps{
                     script{
                         containerId = sh (
-                        script :'docker ps -a -q --filter="name=hystrix"',
+                        script :'docker ps -a -q --filter="name=mysd*"',
                         returnStdout: true
                         ).trim()
                         if("${containerId}"!= ""){
-                          sh 'docker rm -f $(docker ps -a -q --filter="name=hystrix")'
-                          sh 'docker rmi -f $(docker images --filter=reference=hystrix --format "{{.ID}}")'
+                          sh 'docker rm -f $(docker ps -a -q --filter="name=mysd*")'
+                          sh 'docker rmi -f $(docker images --filter=reference=my-sd-svc --format "{{.ID}}")'
                         }
                     }
-                    sh 'docker build -t hystrix:1.0 .'
+                    sh 'docker build -t my-sd-svc:1 .'
                 }
          }
-        stage('Containerising HystrixApp') {
+         stage('Staging Consul-DockerImage') {
+             agent any
+             steps{
+                     script{
+                         containerId = sh (
+                         script :'docker ps -a -q --filter="name=consul"',
+                         returnStdout: true
+                         ).trim()
+                         if("${containerId}"!= ""){
+                           sh 'docker rm -f $(docker ps -a -q --filter="name=consul")'
+                           sh 'docker rmi -f $(docker images --filter=reference=consulsd --format "{{.ID}}")'
+                         }
+                     }
+                     sh 'docker build -t consulsd:1 ./consul/Dockerfile'
+                 }
+        }
+        stage('Staging Nginx-DockerImage') {
+             agent any
+             steps{
+                     script{
+                         containerId = sh (
+                         script :'docker ps -a -q --filter="name=ngx"',
+                         returnStdout: true
+                         ).trim()
+                         if("${containerId}"!= ""){
+                           sh 'docker rm -f $(docker ps -a -q --filter="name=ngx")'
+                           sh 'docker rmi -f $(docker images --filter=reference=ngx-consulsd --format "{{.ID}}")'
+                         }
+                     }
+                     sh 'docker build -t ngx-consulsd:1 ./nginx_setup/Dockerfile'
+                 }
+        }
+         stage('Containerising Consul-Nginx') {
+             agent any
+              steps {
+                      sh 'sh dockerConsulNginx.sh'
+                    }
+        }
+        stage('Containerising SvcDiscoveryApp') {
             agent any
              steps {
-                     sh 'sh dockercompose.sh'
+                     sh 'sh dockerSvcDiscovery.sh'
                    }
-           }
-       stage('Staging Nginx-DockerImage') {
-           agent any
-            steps {
-               script{
-               containerId = sh (
-                       script :'docker ps -a -q --filter="name=nginx"',
-                       returnStdout: true
-                       ).trim()
-                   if("${containerId}"!= ""){
-                       sh 'docker rm -f $(docker ps -a -q --filter="name=nginx")'
-                       sh 'docker rmi -f $(docker images --filter=reference=mynginx --format "{{.ID}}")'
-                   }
-               }
-                sh 'docker build -t mynginx:1.0 ./nginx_setup/'
-              }
-          }
-          stage('Containerising Nginx') {
-              agent any
-               steps {
-                       sh 'docker run -p 8082:80 --name nginx -v /var/run/docker.sock:/var/run/docker.sock:ro --link=hystrix1 --link=hystrix2 -d mynginx:1.0'
-                     }
-             }
+       }
     }
  }
