@@ -1,40 +1,11 @@
-spring:
-  application:
-    name: myMicroSvc
-  cloud:
-    consul:
-      host: ${CONSUL:localhost}
-      port: 8500
-      #To disable the Consul Discovery Client
-      enabled: true
-      discovery:
-        tags: foo=bar
-        #For TLS update http to https in scheme
-        scheme: http
-        healthCheckPath: /status
-        #        healthCheckUrl: ${req.protocol}://localhost:${server.port}${spring.cloud.consul.discovery.healthCheckPath}
-        healthCheckInterval: 60s
-        #To disable the service registration
-        register: true
-        instanceId: ${spring.application.name}:${random.value}
+#configuration read from consul
 
-#server.port: 8444
-#http.port: 9091
-#req.protocol: http
-
-#server.ssl:
-#  key-store-type: JKS
-#  key-store: classpath:keystore/ssl-cert.jks
-#  key-store-password: changeit
-#  key-password: changeit
-#  enabled: true
-#
-#logging:
-#  level:
-#    root: ERROR
-#    org.springframework.web: INFO
-#    com.tdcr.consul: INFO
-#  file: logs/ServiceDiscovery.log
-#  pattern:
-#    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-#    file: ""
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: INFO
+    com.tdcr.consul: INFO
+  file: logs/ServiceDiscovery.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: ""
