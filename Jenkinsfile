@@ -29,22 +29,6 @@ pipeline {
                     sh 'docker build -t my-sd-svc:1 .'
                 }
          }
-         stage('Staging Consul-DockerImage') {
-             agent any
-             steps{
-                     script{
-                         containerId = sh (
-                         script :'docker ps -a -q --filter="name=consul"',
-                         returnStdout: true
-                         ).trim()
-                         if("${containerId}"!= ""){
-                           sh 'docker rm -f $(docker ps -a -q --filter="name=consul")'
-                           sh 'docker rmi -f $(docker images --filter=reference=consulsd --format "{{.ID}}")'
-                         }
-                     }
-                     sh 'docker build -t consulsd:1 ./consul'
-                 }
-        }
         stage('Staging Nginx-DockerImage') {
              agent any
              steps{
