@@ -1,12 +1,13 @@
 package com.tdcr.consul.request;
 
+import java.util.HashMap;
 import java.util.Map;
 
     public class AgentFeed {
 
         private String imageId;
         private String dockerDeamon;
-        private Map<String,Integer> errorMap;
+        private Map<String,Integer> errorMap = new HashMap<>();
         private String containerName;
 
         public AgentFeed() {
