@@ -8,6 +8,6 @@ logging:
   file: logs/ServiceDiscovery.log
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "logs/ServiceDiscovery.log"
+    file: "${HOME}/logs/ServiceDiscovery.log"
 
 #server.port: 8085
