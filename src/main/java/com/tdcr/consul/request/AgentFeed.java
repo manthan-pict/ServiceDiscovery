@@ -20,6 +20,12 @@ import java.util.Map;
             this.containerName = containerName;
         }
 
+        public AgentFeed(String imageId, String dockerDeamon, String containerName) {
+            this.imageId = imageId;
+            this.dockerDeamon = dockerDeamon;
+            this.containerName = containerName;
+        }
+
         /*public AgentFeed(String imageId, String dockerDeamon, Map<String, Integer> errorMap) {
         super();
         this.imageId = imageId;

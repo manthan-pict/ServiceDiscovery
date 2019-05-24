@@ -17,3 +17,5 @@ spring:
         #To disable the service registration
         register: true
         instanceId: ${spring.application.name}:${random.value}
+        containerName: ${spring.application.name}:${random.value}
+

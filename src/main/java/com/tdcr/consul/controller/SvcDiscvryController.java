@@ -2,10 +2,12 @@ package com.tdcr.consul.controller;
 
 import com.tdcr.consul.config.AppPropsConfig;
 import com.tdcr.consul.request.AgentFeed;
+import com.tdcr.consul.web.PostAgentFeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,6 @@ public class SvcDiscvryController {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    //RestTemplate restTemplate = new RestTemplate();
 
     @Value("${spring.cloud.consul.discovery.instanceId}")
     String instanceID;
@@ -42,6 +43,21 @@ public class SvcDiscvryController {
     @Value("${config.toggle:false}")
     String toggle;
 
+    @Value("${config.URL:localhost}")
+    String URL;
+
+    @Value("${config.imageId:ServiceApp}")
+    String imageId;
+
+    @Value("${config.dockerDeamon:defaultDeamon}")
+    String dockerDeamon;
+
+    @Value("${spring.cloud.consul.discovery.containerName:containerNameRandom}")
+    String containerNameRandom;
+
+    @Value("${config.ContainerName:ContainerNameConsule}")
+    String ContainerNameConsule;
+
     @Autowired
     AppPropsConfig config;
 
@@ -51,18 +67,14 @@ public class SvcDiscvryController {
     @Autowired
     RestTemplate restTemplate;
 
-    private int nullPointerExceptions = 0;
-    private int databaseConnectivityErrors = 0 ;
-    private int timeoutExceptions;
+    private AgentFeed agentFeed = new AgentFeed(imageId, dockerDeamon, containerNameRandom);
 
-    AgentFeed agentFeed = new AgentFeed();
-
-    private int cron = 0 ;
+    private double cron = 0 ;
 
     @RequestMapping("/sd")
     public  String getInstanceID(){
         LOG.info(healthCheckUrl);
-        return instanceID + healthCheckUrl;
+        return healthCheckUrl;
     }
 
     @GetMapping(value = "/status")
@@ -75,18 +87,23 @@ public class SvcDiscvryController {
 
     @PostMapping("/NullPointer")
     public void addNulPointerException() throws RuntimeException {
-        nullPointerExceptions += 1;
         agentFeed.putError("NullPointer");
-        LOG.info("new null pointer exception is detected exception count :{}",nullPointerExceptions );
-        throw new RuntimeException(String.valueOf(nullPointerExceptions));
+        LOG.info("new null pointer exception is detected exception count :{}",agentFeed.getErrorMap().get("NullPointer") );
+        //throw new RuntimeException(String.valueOf(agentFeed.getErrorMap().get("NullPointer")));
     }
 
     @PostMapping("/databaseConnectivityError")
-    public int AddDatabaseConnectivityError() {
-        databaseConnectivityErrors += 1;
+    public int addDatabaseConnectivityError() {
         agentFeed.putError("databaseConnectivityError");
-        LOG.info("new database connectivity issue is detected total connectivity issues are:{}", databaseConnectivityErrors);
-        return databaseConnectivityErrors;
+        LOG.info("new database connectivity issue is detected total connectivity issues are:{}", agentFeed.getErrorMap().get("databaseConnectivityError"));
+        return agentFeed.getErrorMap().get("databaseConnectivityError");
+    }
+
+    @PostMapping("/timeOutException")
+    public int timeoutExceptions() {
+        agentFeed.putError("timeOutException");
+        LOG.info("new timeout exception is detected total exception issues are:{}", agentFeed.getErrorMap().get("timeOutException"));
+        return agentFeed.getErrorMap().get("timeOutException");
     }
 
     @Scheduled(cron = "0,30 * * * * *")
@@ -94,21 +111,27 @@ public class SvcDiscvryController {
         LOG.info("Cron Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
         cron = cron + 1;
 
-        //restTemplate.postForObject()
+        //TODO : databank method need to be copied here.
+        //URI uri = discoveryClient.getInstances("MONITORAPP").stream().map(ServiceInstance::getUri).findFirst().map(s -> s.resolve("/feed")).get();
+        //restTemplate.postForObject(uri, agentFeed, null);
 
+        //restTemplate.postForObject(config.getURL(), agentFeed, null);
+
+
+        //PostAgentFeed.postAgentFeedToMonitor(agentFeed);
 
     }
 
     @GetMapping("/cron")
-    public int getCronNumber() {
+    public double getCronNumber() {
         return cron;
     }
 
-    @GetMapping("/databank")
+    @GetMapping("/getURL")
     public String invokeService() {
-        URI uri = discoveryClient.getInstances("DataBank").stream().map(serviceInstance -> serviceInstance.getUri()).findFirst().map(s -> s.resolve("/updateStatus")).get();
-        return restTemplate.postForObject(uri, "hi from service discovery", String.class);
-
+        //URI uri = discoveryClient.getInstances("DataBank").stream().map(ServiceInstance::getUri).findFirst().map(s -> s.resolve("/updateStatus")).get();
+        //return restTemplate.postForObject(uri, "hi from service discovery", String.class);
+        return config.getURL();
     }
 
 }

@@ -11,6 +11,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AppPropsConfig {
 
     private String toggle;
+    private String URL;
+    private String imageId;
+    private String dockerDeamon;
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    public String getDockerDeamon() {
+        return dockerDeamon;
+    }
+
+    public void setDockerDeamon(String dockerDeamon) {
+        this.dockerDeamon = dockerDeamon;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
 
     public String getToggle() {
         return toggle;
