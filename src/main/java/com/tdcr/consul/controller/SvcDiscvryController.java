@@ -73,8 +73,8 @@ public class SvcDiscvryController {
 
     @RequestMapping("/sd")
     public  String getInstanceID(){
-        LOG.info(healthCheckUrl);
-        return healthCheckUrl;
+        LOG.info(instanceID);
+        return instanceID;
     }
 
     @GetMapping(value = "/status")
