@@ -5,9 +5,9 @@ logging:
     root: DEBUG
     org.springframework.web: INFO
     com.tdcr.consul: INFO
-  file: ${HOME}/logs/ServiceDiscovery.log
+  file: logs/ServiceDiscovery.log
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "${HOME}/logs/ServiceDiscovery.log"
+    file: "logs/ServiceDiscovery.log"
 
 #server.port: 8085
